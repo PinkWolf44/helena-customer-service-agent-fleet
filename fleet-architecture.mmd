@@ -1,0 +1,10 @@
+flowchart TD
+    H["Human operator"] --> I["Support inbox"]
+    I --> A["Market agent runtime"]
+    C["SOUL + SKILL + references + baseline"] --> A
+    A --> T["Order, product and logistics tools"]
+    A --> D["Draft, note, tag or alert"]
+    D --> H
+    O["Behavioural architect"] --> C
+    M["Market specialist"] --> A
+    E["Infrastructure specialist"] --> T
