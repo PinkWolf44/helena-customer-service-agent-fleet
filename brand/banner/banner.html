@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Red Pencil banner</title>
+<style>
+  /* ---------- Red Pencil tokens (see ../STYLE.md) ---------- */
+  :root {
+    --paper: #F3EEE4;
+    --ink: #1C1A17;
+    --graphite: #8A8279;
+    --rule: #D8D0C2;
+    --red: #B4301E;
+    --W: 1584px;
+    --H: 396px;
+    --left: 300px;           /* clear of the LinkedIn profile photo */
+    --headline: 66px;
+    --specimen-x: 1072px;
+    --specimen-w: 440px;
+    --mono: 17px;
+  }
+  @font-face { font-family: "Fraunces"; font-style: normal; font-weight: 300 900;
+    src: url("fonts/Fraunces-normal-300_900.woff2") format("woff2"); }
+  @font-face { font-family: "Fraunces"; font-style: italic; font-weight: 300 900;
+    src: url("fonts/Fraunces-italic-300_900.woff2") format("woff2"); }
+  @font-face { font-family: "Plex Mono"; font-style: normal; font-weight: 400;
+    src: url("fonts/PlexMono-normal-400.woff2") format("woff2"); }
+  @font-face { font-family: "Plex Mono"; font-style: normal; font-weight: 500;
+    src: url("fonts/PlexMono-normal-500.woff2") format("woff2"); }
+  @font-face { font-family: "Plex Mono"; font-style: italic; font-weight: 400;
+    src: url("fonts/PlexMono-italic-400.woff2") format("woff2"); }
+
+  html, body { margin: 0; background: var(--paper); }
+  body { width: var(--W); height: var(--H); overflow: hidden; position: relative;
+         font-family: "Fraunces", Georgia, serif; color: var(--ink);
+         -webkit-font-smoothing: antialiased; }
+
+  /* paper grain: subtle, keeps the flat colour from looking like a vector export */
+  .grain { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .055; mix-blend-mode: multiply; }
+
+  /* ---------- headline ---------- */
+  .head { position: absolute; left: var(--left); top: 50%; transform: translateY(-56%);
+          font-size: var(--headline); line-height: 1.16; font-weight: 480;
+          font-variation-settings: "opsz" 144, "SOFT" 40, "WONK" 1;
+          letter-spacing: -0.012em; white-space: nowrap; }
+  .head .amp { font-weight: 420; }
+  .head .gap { display: inline-block; width: .34em; position: relative; }
+  .head .insert { position: absolute; left: 165%; bottom: 1.24em; transform: translateX(-50%);
+                  font-style: italic; font-weight: 500; color: var(--red);
+                  font-size: .40em; letter-spacing: 0; line-height: 1;
+                  font-variation-settings: "opsz" 36, "SOFT" 60, "WONK" 1; }
+  .head .caret { position: absolute; left: 50%; bottom: -.30em; width: .34em; height: .34em;
+                 transform: translateX(-50%); overflow: visible; }
+  .head .caret path { fill: none; stroke: var(--red); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  .tags { position: absolute; left: var(--left); top: 50%; transform: translateY(-50%);
+          margin-top: calc(var(--headline) * 1.62);
+          font-family: "Plex Mono", monospace; font-weight: 500; font-size: 14.5px;
+          letter-spacing: .24em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+  .tags .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+               background: var(--red); margin: 0 1.1em 0 1.1em; vertical-align: middle; position: relative; top: -2px; }
+
+  /* ---------- specimen: machine text, red-pencilled ---------- */
+  .specimen { position: absolute; left: var(--specimen-x); top: 50%; transform: translateY(-50%);
+              width: var(--specimen-w); padding: 26px 0 22px 26px; }
+  .specimen .margin { position: absolute; left: 0; top: -40px; bottom: -40px; width: 1.5px; background: var(--red); opacity: .55; }
+  .specimen .line { font-family: "Plex Mono", monospace; font-size: var(--mono); line-height: 1.95;
+                    color: var(--graphite); white-space: nowrap; letter-spacing: .01em; }
+  .specimen .w { position: relative; display: inline-block; }
+  .specimen .fix { position: absolute; left: 50%; bottom: 1.12em; transform: translateX(-50%);
+                   font-family: "Fraunces", serif; font-style: italic; font-weight: 500; font-size: 1.22em;
+                   color: var(--red); line-height: 1; white-space: nowrap;
+                   font-variation-settings: "opsz" 24, "SOFT" 60, "WONK" 1; }
+  .specimen .stet { position: absolute; left: 0; top: 2.05em; font-family: "Plex Mono", monospace;
+                    font-size: .78em; letter-spacing: .14em; color: var(--red); line-height: 1; }
+  .specimen .cap { margin-top: 14px; font-family: "Plex Mono", monospace; font-size: 11.5px; letter-spacing: .18em;
+                   text-transform: uppercase; color: var(--graphite); }
+  .marks { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+  .marks path { fill: none; stroke: var(--red); stroke-width: 2.2; stroke-linecap: round; }
+  .marks path.dots { stroke-width: 2.4; stroke-dasharray: 0 5.5; }
+
+  /* ---------- the cat ---------- */
+  .cat { position: absolute; width: 196px; height: auto; overflow: visible; }
+  .cat path, .cat circle { fill: var(--paper); stroke: var(--ink); stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+  .cat .open { fill: none; }
+  .cat .nose { fill: var(--red); stroke: none; }
+  .cat .tail { fill: none; }
+
+  /* ---------- animation (only when body has .animate) ---------- */
+  .animate .draw { stroke-dasharray: var(--len); stroke-dashoffset: var(--len);
+                   animation: draw var(--dur, .55s) cubic-bezier(.4,0,.2,1) var(--at) forwards; }
+  .animate .reveal { clip-path: inset(-20% 100% -20% -5%);
+                     animation: reveal .55s cubic-bezier(.4,0,.2,1) var(--at) forwards; }
+  .animate .fadein, .animate path.fadein { opacity: 0; animation: fadein .35s ease-out var(--at) forwards; }
+  .animate .tail { transform-origin: 26px 101px; animation: tail 1.1s ease-in-out 3.6s 1; }
+  .animate .ear-l { transform-origin: 146px 50px; animation: ear .35s ease-in-out 4.6s 1; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes reveal { to { clip-path: inset(-20% -5% -20% -5%); } }
+  @keyframes fadein { to { opacity: 1; } }
+  @keyframes tail { 0%,100% { transform: rotate(0deg); } 35% { transform: rotate(-14deg); } 70% { transform: rotate(6deg); } }
+  @keyframes ear { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-9deg); } }
+</style>
+</head>
+<body>
+
+<svg class="grain" xmlns="http://www.w3.org/2000/svg">
+  <filter id="g"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+    <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.1"/></filter>
+  <rect width="100%" height="100%" filter="url(#g)"/>
+</svg>
+
+<div class="head">
+  <div>At the intersection of</div>
+  <div>AI, language <span class="amp">&amp;</span><span class="gap"><span class="insert reveal" style="--at:2.75s">human</span><svg class="caret" viewBox="0 0 24 24"><path class="draw" style="--len:40;--at:2.35s;--dur:.4s" d="M2 20 L12 6 L22 20"/></svg></span>judgment</div>
+</div>
+
+<div class="tags">Implementation<span class="dot"></span>Philology<span class="dot"></span>Creative systems</div>
+
+<div class="specimen">
+  <div class="margin"></div>
+  <div class="line">The agent <span class="w" data-mark="strike" data-at="0.9"><span class="fix fadein" style="--at:1.5s">drafts</span>resolves</span> every ticket</div>
+  <div class="line">and <span class="w" data-mark="strike" data-at="1.25"><span class="fix fadein" style="--at:1.85s">then hands it to</span>never needs</span> <span class="w" data-mark="stet" data-at="2.0"><span class="stet fadein" style="--at:2.25s">stet</span>a human.</span></div>
+  <div class="cap">model output · reviewed</div>
+  <svg class="marks" xmlns="http://www.w3.org/2000/svg"></svg>
+</div>
+
+<!-- sleeping ink cat, loaf pose, head to the right -->
+<svg class="cat" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+  <path class="tail" d="M26 101 C 2 104, -6 80, 14 74 C 30 69, 38 86, 28 92"/>
+  <path d="M22 100 C 14 70, 40 44, 92 44 C 136 44, 160 56, 166 80 C 169 94, 160 104, 142 104 L 34 104 C 24 104, 22 103, 22 100 Z"/>
+  <path class="open" d="M58 54 q 7 8 3 18"/><path class="open" d="M74 50 q 7 8 3 18"/><path class="open" d="M90 48 q 7 8 3 18"/>
+  <path d="M100 104 q 9 -11 18 0"/><path d="M122 104 q 9 -11 18 0"/>
+  <path class="ear-l" d="M132 56 L 138 30 L 154 50"/>
+  <path d="M160 50 L 174 30 L 178 56"/>
+  <path d="M128 76 C 128 58, 142 48, 156 48 C 172 48, 182 60, 182 76 C 182 92, 170 98, 155 98 C 140 98, 128 92, 128 76 Z"/>
+  <path class="open" d="M143 76 q 5 5 10 0"/><path class="open" d="M163 76 q 5 5 10 0"/>
+  <path class="nose" d="M156 84 l -3.6 -3.6 a 2.2 2.2 0 0 1 3.6 -1.6 a 2.2 2.2 0 0 1 3.6 1.6 Z"/>
+  <path class="open" d="M156 85 q -1 4 -5 4"/><path class="open" d="M156 85 q 1 4 5 4"/>
+  <path class="open" d="M176 80 l 14 -3"/><path class="open" d="M177 85 l 15 1"/>
+  <path class="open" d="M136 80 l -14 -3"/><path class="open" d="M135 85 l -15 1"/>
+</svg>
+
+<script>
+  // Size + mode from the query string: ?w=1500&h=500&animate=1
+  const q = new URLSearchParams(location.search);
+  const W = +q.get('w') || 1584, H = +q.get('h') || 396;
+  const r = document.documentElement.style;
+  r.setProperty('--W', W + 'px'); r.setProperty('--H', H + 'px');
+  const s = Math.min(W / 1584, 1.0);
+  r.setProperty('--headline', Math.round(66 * s * (H / 396 > 1.15 ? 1.06 : 1)) + 'px');
+  r.setProperty('--left', Math.round(W * 0.19) + 'px');
+  r.setProperty('--specimen-x', Math.round(W - 512 * s) + 'px');
+  if (q.get('animate') === '1') document.body.classList.add('animate');
+
+  // Place the cat on the specimen's top-right, paws on the paper edge.
+  function layout() {
+    const sp = document.querySelector('.specimen').getBoundingClientRect();
+    const cat = document.querySelector('.cat');
+    cat.style.left = (sp.right - 206) + 'px';
+    cat.style.top  = (sp.top - 92) + 'px';
+    drawMarks();
+  }
+
+  // Proofreader's marks measured from the actual glyph boxes, so they follow the type exactly.
+  function drawMarks() {
+    const svg = document.querySelector('.marks');
+    const box = document.querySelector('.specimen').getBoundingClientRect();
+    svg.innerHTML = '';
+    document.querySelectorAll('.specimen .w').forEach(el => {
+      const range = document.createRange(); range.selectNodeContents(el);
+      // last client rect is the visible word itself (fixes are absolutely positioned)
+      const rects = [...range.getClientRects()].filter(rc => rc.width > 4);
+      const rc = rects[rects.length - 1];
+      const x1 = rc.left - box.left - 1, x2 = rc.right - box.left + 1;
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const at = el.dataset.at || '0';
+      if (el.dataset.mark === 'strike') {
+        const y = rc.top - box.top + rc.height * 0.56;
+        p.setAttribute('d', `M${x1} ${y + 1.5} L${x2} ${y - 1.5}`);
+        p.classList.add('draw');
+        p.style.setProperty('--len', (x2 - x1 + 4).toFixed(0));
+      } else { // stet: dotted underline
+        const y = rc.top - box.top + rc.height * 0.86;
+        p.setAttribute('d', `M${x1 + 2} ${y} L${x2 - 2} ${y}`);
+        p.classList.add('dots', 'fadein');
+      }
+      p.style.setProperty('--at', at + 's');
+      svg.appendChild(p);
+    });
+  }
+  document.fonts.ready.then(() => { layout(); window.__ready = true; });
+</script>
+</body>
+</html>
